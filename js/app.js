@@ -41,15 +41,14 @@
             <div class="card-body">
                 <h5 class="card-title">Name: ${phone.phone_name}</h5>
                 <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                <button onclick="loadPhoneDetails('${phone.slug}')" class="btn btn-primary">Show Details</button>
+                <button onclick="loadPhoneDetails('${phone.slug}')" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#phoneModal">Show Details</button>
             </div>
         </div>
         `
         phoneElement.appendChild(cardDiv)
         
-        // stop loader
-        console.log(phone)
     })
+    // stop loader
     toggleSpinner(false)
  }
 
@@ -89,7 +88,33 @@ document.getElementById('search-field').addEventListener('keypress', function(e)
     const url = `https://openapi.programming-hero.com/api/phone/${id}`;
     const res = await fetch(url);
     const data = await res.json();
-    console.log(data.data)
+    displayPhoneDetails(data.data)
 
  }
-//  loadPhones('p')
+
+ const displayPhoneDetails = (phone) => {
+    const modalTitle = document.getElementById('phoneModalLabel')
+    modalTitle.innerText =  `
+        ${phone.name}
+    `
+    document.getElementById('phone-details').innerHTML = `
+        <h4 class="text-primary"> Brand: ${phone.brand} </h4>
+        <div  class="text-center">
+            <img src="${phone.image}">
+        </div>
+        <p>Release Date: ${phone.releaseDate}</p>
+        <div>
+            <h5>All Features: </h5>
+            <p class="border-bottom border-dark border-1">Main Features:  ${phone.mainFeatures.sensors[0]}, ${phone.mainFeatures.sensors[1]}, ${phone.mainFeatures.sensors[2]}, ${phone.mainFeatures.sensors[3]}, ${phone.mainFeatures.sensors[4]}, ${phone.mainFeatures.sensors[5]}</p>
+            <p class="border-bottom border-dark border-1">Display: ${phone.mainFeatures.displaySize}</p>
+            <p class="border-bottom border-dark border-1">Chipset: ${phone.mainFeatures.chipSet}</p>
+            <p class="border-bottom border-dark border-1">Storage: ${phone.mainFeatures.memory}</p>
+            
+            <p class="border-bottom border-dark border-1">WLAN: ${phone.others.WLAN ? phone.others.WLAN : 'No' }</p>
+            <p class="border-bottom border-dark border-1">Bluetooth: ${phone.others.Bluetooth ? phone.others.Bluetooth : 'No' }</p>
+            <p class="border-bottom border-dark border-1">GPS: ${phone.others.GPS ? phone.others.GPS : 'No' }</p>
+        </div>
+        
+    `
+ }
+ loadPhones('p')
